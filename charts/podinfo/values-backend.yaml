@@ -1,0 +1,16 @@
+ingress:
+  enabled: true
+  className: ""
+  additionalLabels: {}
+  annotations: 
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: shared-alb
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/success-codes: "200"
+  hosts:
+    - host: karpenter-blueprint.scf-it.com
+      paths:
+        - path: /api2/*
+          pathType: ImplementationSpecific
