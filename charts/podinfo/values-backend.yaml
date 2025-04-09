@@ -1,3 +1,9 @@
+# Redis deployment
+redis:
+  enabled: true
+  repository: redis
+  tag: 7.0.7
+
 ingress:
   enabled: true
   className: ""
