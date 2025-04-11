@@ -1,49 +1,27 @@
-name: Publish Helm Charts
+name: Release Charts
 
 on:
   push:
-    tags:
-      - '*'
-  workflow_dispatch:  # Allow manual triggering
-
-permissions:
-  contents: read
+    branches:
+      - master
 
 jobs:
   release:
-    runs-on: ubuntu-latest
     permissions:
       contents: write
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          version: v3.16.1
-      
+          fetch-depth: 0
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      
-      - name: Initialize gh-pages branch
-        run: |
-          git checkout --orphan gh-pages
-          git reset --hard
-          git commit --allow-empty -m "Initialize gh-pages branch"
-          git push origin gh-pages
-        continue-on-error: true
-      
-      - name: Package and index Helm chart
-        run: |
-          mkdir -p .cr-release-packages
-          helm package charts/podinfo -d .cr-release-packages
-          helm repo index .cr-release-packages --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
-          
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .cr-release-packages
-          keep_files: true
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
