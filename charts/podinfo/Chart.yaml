@@ -1,13 +1,13 @@
 apiVersion: v1
-version: 6.8.3
-appVersion: 6.8.3
+version: 6.8.4
+appVersion: 6.8.4
 name: podinfo
 engine: gotpl
 description: Podinfo Helm chart for Kubernetes
-home: https://github.com/stefanprodan/podinfo
+home: https://github.com/dce-scf/podinfo
 maintainers:
 - email: stefanprodan@users.noreply.github.com
   name: stefanprodan
 sources:
-- https://github.com/stefanprodan/podinfo
+- https://github.com/dce-scf/podinfo
 kubeVersion: ">=1.23.0-0"
