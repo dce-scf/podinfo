@@ -1,0 +1,26 @@
+name: Hello World
+
+on:
+  # Triggers on push to any branch
+  push:
+    branches: [ '*' ]
+  
+  # Allows manual triggering
+  workflow_dispatch:
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Say Hello
+        run: echo "Hello, GitHub Actions World!"
+        
+      - name: Show environment variables
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Workflow running on: ${{ runner.os }}"
