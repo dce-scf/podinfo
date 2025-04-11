@@ -3,10 +3,7 @@ name: Publish Helm Charts
 on:
   push:
     tags:
-      - '*'
-    # You can also trigger on pushes to specific branches if you prefer
-    # branches:
-    #   - main
+      - master
 
 permissions:
   contents: write 
