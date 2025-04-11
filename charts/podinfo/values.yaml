@@ -8,12 +8,12 @@ backends: []
 
 image:
   repository: ghcr.io/stefanprodan/podinfo
-  tag: 6.8.0
+  tag: 6.8.5
   pullPolicy: IfNotPresent
 
 ui:
-  color: "#34577c"
-  message: ""
+  color: "#ff5733"
+  message: "Updated via CI/CD"
   logo: ""
 
 # failure conditions
