@@ -3,40 +3,44 @@ name: Publish Helm Charts
 on:
   push:
     tags:
-      - master
+      - '*'
+  workflow_dispatch:  # Allow manual triggering
 
-permissions:
-  contents: write 
-  
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # needed to write releases and gh-pages
+      contents: write
     steps:
       - uses: actions/checkout@v4
-        
-      - name: Setup Helm
+      
+      - name: Set up Helm
         uses: azure/setup-helm@v3
         with:
           version: v3.16.1
-          
-      - name: Prepare
-        id: prep
+      
+      - name: Configure Git
         run: |
-          VERSION=sha-${GITHUB_SHA::8}
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF/refs\/tags\//}
-          fi
-          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
-          
-      - name: Package Helm Chart
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      
+      - name: Initialize gh-pages branch
         run: |
-          helm package charts/podinfo --version ${{ steps.prep.outputs.VERSION }}
+          git checkout --orphan gh-pages
+          git reset --hard
+          git commit --allow-empty -m "Initialize gh-pages branch"
+          git push origin gh-pages
+        continue-on-error: true
+      
+      - name: Package and index Helm chart
+        run: |
+          mkdir -p .cr-release-packages
+          helm package charts/podinfo -d .cr-release-packages
+          helm repo index .cr-release-packages --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
           
-      - name: Publish helm chart to GitHub Pages
-        uses: dce-scf/podinfo/helm-gh-pages@master
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          charts_dir: .
-          target_dir: .
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .cr-release-packages
+          keep_files: true
