@@ -12,8 +12,8 @@ image:
   pullPolicy: IfNotPresent
 
 ui:
-  color: "#ff5733"
-  message: "Updated via CI/CD"
+  color: "#34577c"
+  message: ""
   logo: ""
 
 # failure conditions
