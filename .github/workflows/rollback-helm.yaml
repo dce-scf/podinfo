@@ -6,6 +6,9 @@ on:
       version:
         description: 'Version to rollback to'
         required: true
+        type: choice
+        options:
+          - fetch_versions
 
 jobs:
   rollback:
